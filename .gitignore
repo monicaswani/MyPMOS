@@ -37,6 +37,9 @@ coverage/
 n8n_data/
 .n8n/
 
+# ---- Claude Code ----
+.claude/settings.local.json
+
 # ---- OS / editor ----
 .DS_Store
 Thumbs.db
