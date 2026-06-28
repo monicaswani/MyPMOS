@@ -1,0 +1,20 @@
+# PMOS continuous integration.
+# Placeholder pipeline — fill in steps once application code lands.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Lint & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Placeholder
+        run: echo "CI scaffold — add lint, test, and build steps here."
