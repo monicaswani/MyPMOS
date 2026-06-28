@@ -1,0 +1,39 @@
+# Docker Compose configuration for the PMOS local AI development environment.
+# Compose v2 / Compose Specification syntax (no top-level `version:` key needed).
+# Currently provisions only n8n; PostgreSQL, Redis, and Qdrant are added later.
+
+services:
+  # n8n — the workflow orchestration engine for PMOS automations.
+  n8n:
+    # Official n8n image; pinned to a major tag for reproducible local runs.
+    image: n8nio/n8n:1
+    # Stable container name so it's easy to reference in logs and CLI commands.
+    container_name: pmos-n8n
+    # Restart automatically unless explicitly stopped by the developer.
+    restart: unless-stopped
+    ports:
+      # Map host port 5678 to n8n's default in-container port 5678 (the editor UI).
+      - "5678:5678"
+    environment:
+      # Hostname n8n binds to inside the container (all interfaces).
+      - N8N_HOST=0.0.0.0
+      # Port n8n listens on inside the container.
+      - N8N_PORT=5678
+      # Protocol used when n8n builds URLs (http for local development).
+      - N8N_PROTOCOL=http
+      # Public base URL the editor and webhooks use to reach this instance.
+      - WEBHOOK_URL=http://localhost:5678/
+      # Timezone for cron triggers and timestamps in workflow executions.
+      - GENERIC_TIMEZONE=UTC
+      # Persist execution history to disk so runs survive restarts.
+      - DB_TYPE=sqlite
+      # Suppress n8n's permission warning for the mounted config file.
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+    volumes:
+      # Persist all n8n data (workflows, credentials, SQLite DB) in a named volume.
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  # Named volume managed by Docker's local driver; survives container recreation.
+  n8n_data:
+    driver: local
